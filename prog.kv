@@ -1,0 +1,58 @@
+WindowManager:
+	MainWindow:
+	SecondWindow:
+	
+<MainWindow>:
+	name: "menu"
+	Button:
+		size_hint: (1, 0.2)
+		text: "HI, CLICK!"
+		on_release:
+			app.root.current = "game"		
+			root.manager.transition.direction = "left"
+	
+<SecondWindow>:
+	name: "game"
+	
+	GridLayout:
+		name: "gridlayout"
+		cols: 10
+		Button:
+			name: "button1"
+			text: "1"
+			size: 30, 30
+		Button:
+			name: "button2"
+			text: "2"
+		Button:
+			name: "button3"
+			text: "3"
+		Button:
+			name: "button4"
+			text: "4"
+		Button:
+			name: "button5"
+			text: "5"
+		Button:
+			name: "button6"
+			text: "6"
+		Button:
+			name: "button7"
+			text: "7"
+		Button:
+			name: "button8"
+			text: "8"
+		Button:
+			name: "button9"
+			text: "9"
+		Button:
+			name: "button10"
+			text: "10"
+	
+	BoxLayout:
+		Button:
+			size_hint: (1, 0.075)
+			text: "Go back"
+			on_release:
+				app.root.current = "menu"
+				root.manager.transition.direction = "right"
