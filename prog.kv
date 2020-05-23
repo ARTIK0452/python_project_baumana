@@ -1,54 +1,67 @@
 WindowManager:
-	EnterAccountWindow:
-	MainWindow:
-	
-<EnterAccountWindow>:
-	name: "enter"
-	
+    MainWindow:
+    WeatherWindow:
+
+<MainWindow>:
+    name: "main"
 	FloatLayout:
 		orientation: 'vertical'
-		Label:
-			text: "number phone:"
-			font_size: (root.width**2 + root.height**2) /13**4
-			pos_hint: {"center_x":0.190, "top":0.68}
-			size_hint: 0.35, 0.15
-		TextInput:
-			id: phone
+		Button:
+			id: weather
+			text: "Погода"
 			font_size: (root.width**2 + root.height**2) /13**4 
-			multiline: False
 			pos_hint: {"center_x":0.5, "top":0.65}
 			size_hint: 0.3, 0.085
-		Label:
-			text: "password:"
-			font_size: (root.width**2 + root.height**2) /13**4
-			pos_hint: {"center_x":0.235, "top":0.58}
-			size_hint: 0.35, 0.15
-		TextInput:
-			id: password
+			on_release:
+				app.root.current = "weather"		
+				root.manager.transition.direction = "left"
+		Button:
+			id: minigame
+			text: "v razrabotke"
 			font_size: (root.width**2 + root.height**2) /13**4 
 			multiline: False
 			password: True
 			pos_hint: {"center_x":0.5, "top":0.55}
 			size_hint: 0.3, 0.085
-		CheckBox:
-			pos_hint: {"center_x":0.7, "top":0.98}
-			size_hint: 0.2, 0.045
+			on_release:
+				app.root.current = "main"		
+				root.manager.transition.direction = "left"
 		Button:
-			pos_hint: {"center_x":0.5, "y":0.05}
-			size_hint: 0.6, 0.150
+			id: info
+			pos_hint: {"center_x":0.5, "y":0.365}
+			size_hint: 0.3, 0.085
 			font_size: (root.width**2 + root.height**2) /13**4 
-			text: "Login"
+			text: "info"
 			on_release:
 				app.root.current = "main"		
 				root.manager.transition.direction = "left"
 
-<MainWindow>:
-	name: "main"
-		Button:
-			pos_hint: {"center_x":0.5, "y":0.05}
-			size_hint: 0.6, 0.150
+<WeatherWindow>:
+	name: "weather"
+	FloatLayout:
+		orientation: 'vertical'
+		Label:
+			font_size: (root.width**2 + root.height**2) /13**4
+			text: "Enter the city and country"
+			pos_hint: {"center_x":0.5, "top":0.95}
+			size_hint: 0.5, 0.085
+		TextInput:
+			id: cityCountry
 			font_size: (root.width**2 + root.height**2) /13**4 
-			text: "Login"
+			multiline: False
+			pos_hint: {"center_x":0.5, "top":0.85}
+			size_hint: 0.5, 0.085
+		Button:
+			id: search
+			text: "Search"
+			font_size: (root.width**2 + root.height**2) /13**4 
+			pos_hint: {"center_x":0.5, "top":0.75}
+			size_hint: 0.3, 0.085
+		Button:
+			pos_hint: {"center_x":0.053, "y":0.90}
+			size_hint: 0.08, 0.08
+			font_size: (root.width**2 + root.height**2) /15**4 
+			text: "back"
 			on_release:
-				app.root.current = "enter"		
+				app.root.current = "main"		
 				root.manager.transition.direction = "right"
