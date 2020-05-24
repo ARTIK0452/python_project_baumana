@@ -3,6 +3,13 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 import requests
 
+#import sqlite3
+#connect = sqlite3.connect('users.db')
+#cursor = connect.cursor()
+#cursor.execute('CREATE TABLE IF NOT EXISTS users (login text) ')
+#connect.commit()
+#connect.close()
+
 class MainWindow(Screen):
     pass
 
