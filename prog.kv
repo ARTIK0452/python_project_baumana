@@ -1,3 +1,4 @@
+# coding: utf8
 WindowManager:
 	MainWindow:
 	WeatherWindow:
@@ -38,12 +39,17 @@ WindowManager:
 			on_release:
 				app.root.current = "info"		
 				root.manager.transition.direction = "left"
+		Label:
+			text: "Version 1.0"
+			font_size: (root.width**2 + root.height**2) /14**4
+			pos_hint: {"center_x":0.915, "top":0.07}
+			size_hint: 0.3, 0.085
 
 <WeatherWindow>:
 	name: "weather"
-	cityCountry_widget: cityCountry
-	search_widget: search
-	info_weather_widget: infoweater
+	cityCountry: cityCountry
+	search: search
+	infoweater: infoweater
 	FloatLayout:
 		orientation: 'vertical'
 		Label:
@@ -77,13 +83,26 @@ WindowManager:
 			id: infoweater
 			font_size: (root.width**2 + root.height**2) /13**4
 			text: "weather"
-			pos_hint: {"center_x":0.5, "top":0.35}
+			pos_hint: {"center_x":0.5, "top":0.85}
 			size_hint: 0.5, 0.085
 
 <InfoWeather>:
 	name: "info"
-	TextInput:
-		font_size: (root.width**2 + root.height**2) /13**4 
-		multiline: False
-		pos_hint: {"center_x":0.5, "top":0.85}
-		size_hint: 0.5, 0.085
+	Label:
+		text: "developed by a Bauman Engineering student"
+		font_size: (root.width**2 + root.height**2) /13**4
+		pos_hint: {"center_x":0.5, "top":0.65}
+		size_hint: 0.3, 0.085
+	Label:
+		text: "Developer: Valov Arthur"
+		font_size: (root.width**2 + root.height**2) /13**4
+		pos_hint: {"center_x":0.5, "top":0.5}
+		size_hint: 0.3, 0.085
+	Button:
+		pos_hint: {"center_x":0.053, "y":0.90}
+		size_hint: 0.08, 0.08
+		font_size: (root.width**2 + root.height**2) /15**4 
+		text: "back"
+		on_release:
+			app.root.current = "main"		
+			root.manager.transition.direction = "right"
