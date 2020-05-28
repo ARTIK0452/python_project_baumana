@@ -1,187 +1,30 @@
-# coding: utf8
-WindowManager:
-	MainWindow:
-	WeatherWindow:
-	InfoWeather:
+import requests
+from geopy.geocoders import Nominatim
 
-<MainWindow>:
-	name: "main"
-	FloatLayout:
+class getWeather:
+        def __init__(self, city):
+                self.appid = '5d9d9f7178756dbc78d68958da985841'
+                self.city = city
+
+        def weather_data(self, lantitude, lontitude):
+                try:
+                        res = requests.get('https://api.openweathermap.org/data/2.5/onecall?lat=' + str(lantitude) + '&lon=' + str(lontitude) + '&exclude=hourly,daily&lang=ru&units=metric&appid=' + self.appid)
+                        data = res.json()
+                        lstData = [data['lat'], data['lon'], data['timezone'], data['current']['temp'], data['current']['pressure'],
+                              data['current']['humidity'], data['current']['clouds'], data['current']['wind_speed'],
+                              data['current']['wind_deg'], data['current']['weather'][0]['description']]
+                        return lstData
+                except Exception as e:
+                        return False
 		
-		orientation: 'vertical'
-		Button:
-			id: weather
-			text: "Погода"
-			font_size: (root.width**2 + root.height**2) /13**4 
-			pos_hint: {"center_x":0.5, "top":0.65}
-			size_hint: 0.3, 0.085
-			on_release:
-				app.root.current = "weather"		
-				root.manager.transition.direction = "left"
-		Button:
-			id: minigame
-			text: "v razrabotke"
-			font_size: (root.width**2 + root.height**2) /13**4 
-			multiline: False
-			password: True
-			pos_hint: {"center_x":0.5, "top":0.55}
-			size_hint: 0.3, 0.085
-			on_release:
-				app.root.current = "main"		
-				root.manager.transition.direction = "left"
-		Button:
-			id: info
-			name: "info"
-			pos_hint: {"center_x":0.5, "y":0.365}
-			size_hint: 0.3, 0.085
-			font_size: (root.width**2 + root.height**2) /13**4 
-			text: "info"
-			on_release:
-				app.root.current = "info"		
-				root.manager.transition.direction = "left"
-		Label:
-			text: "Version 1.0"
-			font_size: (root.width**2 + root.height**2) /14**4
-			pos_hint: {"center_x":0.915, "top":0.07}
-			size_hint: 0.3, 0.085
-
-<WeatherWindow>:
-	name: "weather"
-	cityCountry: cityCountry
-	search: search
+        def geo_location(self):
+                try:
+                        locator = Nominatim (user_agent = 'myGeocoder')
+                        location = locator.geocode (self.city)
+                        return self.weather_data(location.latitude, location.longitude)
+                except Exception as e:
+                        return False
 	
-	country: country
-	city: city
-	coord: coord
-	clouds: clouds
-	pressure: pressure
-	humidity: humidity
-	wind: wind
 
-	FloatLayout:
-		orientation: 'vertical'
-		Label:
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "Enter the city and country"
-			pos_hint: {"center_x":0.5, "top":0.95}
-			size_hint: 0.5, 0.085
-		TextInput:
-			id: cityCountry
-			font_size: (root.width**2 + root.height**2) /13**4 
-			multiline: False
-			pos_hint: {"center_x":0.5, "top":0.85}
-			size_hint: 0.5, 0.085
-		Button:
-			id: search
-			text: "Search"
-			font_size: (root.width**2 + root.height**2) /13**4 
-			pos_hint: {"center_x":0.5, "top":0.75}
-			size_hint: 0.3, 0.085
-			on_release:
-				root.search_info_weather(cityCountry.text)
-		Button:
-			pos_hint: {"center_x":0.053, "y":0.90}
-			size_hint: 0.08, 0.08
-			font_size: (root.width**2 + root.height**2) /15**4 
-			text: "back"
-			on_release:
-				app.root.current = "main"		
-				root.manager.transition.direction = "right"
-		Label:
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "Country: "
-			pos_hint: {"center_x":0.34, "top":0.670}
-			size_hint: 0.5, 0.085
-		Label:
-			id: country
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "strana"
-			pos_hint: {"center_x":0.52, "top":0.670}
-			size_hint: 0.5, 0.085
-		Label:
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "City: "
-			pos_hint: {"center_x":0.38, "top":0.590}
-			size_hint: 0.5, 0.085
-		Label:
-			id: city
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "gorod"
-			pos_hint: {"center_x":0.52, "top":0.590}
-			size_hint: 0.5, 0.085
-		Label:
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "Coord: "
-			pos_hint: {"center_x":0.36, "top":0.510}
-			size_hint: 0.5, 0.085
-		Label:
-			id: coord
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "coordinaty"
-			pos_hint: {"center_x":0.565, "top":0.510}
-			size_hint: 0.5, 0.085
-		Label:
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "Clouds: "
-			pos_hint: {"center_x":0.35, "top":0.430}
-			size_hint: 0.5, 0.085
-		Label:
-			id: clouds
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "oblachnost"
-			pos_hint: {"center_x":0.57, "top":0.430}
-			size_hint: 0.5, 0.085
-		Label:
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "Pressure: "
-			pos_hint: {"center_x":0.33, "top":0.350}
-			size_hint: 0.5, 0.085
-		Label:
-			id: pressure
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "davlenie"
-			pos_hint: {"center_x":0.545, "top":0.350}
-			size_hint: 0.5, 0.085
-		Label:
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "humidity: "
-			pos_hint: {"center_x":0.33, "top":0.270}
-			size_hint: 0.5, 0.085
-		Label:
-			id: humidity
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "vladjnost"
-			pos_hint: {"center_x":0.553, "top":0.270}
-			size_hint: 0.5, 0.085
-		Label:
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "wind: "
-			pos_hint: {"center_x":0.370, "top":0.190}
-			size_hint: 0.5, 0.085
-		Label:
-			id: wind
-			font_size: (root.width**2 + root.height**2) /13**4
-			text: "veter"
-			pos_hint: {"center_x":0.515, "top":0.190}
-			size_hint: 0.5, 0.085
-
-<InfoWeather>:
-	name: "info"
-	Label:
-		text: "developed by a Bauman Engineering student"
-		font_size: (root.width**2 + root.height**2) /13**4
-		pos_hint: {"center_x":0.5, "top":0.65}
-		size_hint: 0.3, 0.085
-	Label:
-		text: "Developer: Valov Arthur"
-		font_size: (root.width**2 + root.height**2) /13**4
-		pos_hint: {"center_x":0.5, "top":0.5}
-		size_hint: 0.3, 0.085
-	Button:
-		pos_hint: {"center_x":0.053, "y":0.90}
-		size_hint: 0.08, 0.08
-		font_size: (root.width**2 + root.height**2) /15**4 
-		text: "back"
-		on_release:
-			app.root.current = "main"		
-			root.manager.transition.direction = "right"
+#my = getWeather('Moscow')
+#print(my.geo_location())
