@@ -19,9 +19,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivymd.uix.button import MDRoundFlatButton
 from kivymd.uix.label import MDLabel
-import sqlite3
-
-#connect = sqlite3.connect('search_history.db')
+#import sqlite3
 
 KV = '''
 <ContentNavigationDrawer>:
