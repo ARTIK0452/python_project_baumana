@@ -1,6 +1,7 @@
 import math
 import datetime
 import weatherTest
+import dbOperation
 from kivy.lang import Builder
 from kivy.properties import StringProperty, BooleanProperty
 from kivy.uix.boxlayout import BoxLayout
@@ -19,7 +20,9 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivymd.uix.button import MDRoundFlatButton
 from kivymd.uix.label import MDLabel
-#import sqlite3
+import sqlite3
+
+#connect = sqlite3.connect('search_history.db')
 
 KV = '''
 <ContentNavigationDrawer>:
@@ -70,12 +73,12 @@ Screen:
             Screen:
                 id: screen1
                 name: "weather"
-                #canvas.before:
-                    #Rectangle:
-                        #id: rectangle1
-                        #pos: self.pos
-                        #size: self.size
-                        #source: 'clouds.png'
+                canvas.before:
+                    Rectangle:
+                        id: rectangle1
+                        pos: self.pos
+                        size: self.size
+                        source: 'clouds.png'
 
                 textinput: textinput
                 search: search
@@ -171,12 +174,30 @@ Screen:
                     
             Screen:
                 name: "history"
-                MDGridLayout:
+
+                historyButton: historyButton
+                scrollview: scrollview
+
+                MyHistoryButton:
+                    id: historyButton
+                    name: 'historyView'
+                    size_hint: .54, .08
+                    pos_hint: {'x':.2, 'y': .8}
+                    text: 'История 10 запросов'
+                    
+                #ScrollView:
+                #    pos_hint: {'x':.3,'y': 0.001}
+                #    padding: 0, 300
+                                   
+                GridLayout:
+                    adaptive_height: True
+                    id: scrollview
+                    pos_hint: {'x':.4,'y': 0.001}
+                    padding: 0, 150
+                    #size_hint_y: None
+                    height: self.minimum_height
+                    spacing: '5dp'
                     cols: 1
-                    MDLabel:
-                        id: noy
-                        text: "Здесь пока пусто!"
-                        halign: "center"
 
             Screen:
                 name: "settings"
@@ -219,18 +240,26 @@ class myclass(MDLabel):
     def putData(self):
         print(MDLabel.ids.cityCountry.text)
 
-class MyButton(MDRoundFlatButton, ThemableBehavior):
-    #def insert_db(self, nscity):
-        #try:
-            #print(nscity)
-            #connect = sqlite3.connect('history_weather.db')
-            #cursor = connect.cursor()
-            #cursor.execute('''CREATE TABLE history (city text)''')
-            #c.execute("INSERT INTO history (city) VALUES ("{nscity}")")
-            #connect.commit()
-        #except:
-            #print('govno')
+class MyHistoryButton(MDRoundFlatButton, ThemableBehavior):
+    def on_release(self, *args):
+        app = App.get_running_app()
+        app.root.ids.scrollview.clear_widgets()
+        myDB = dbOperation.db_operation()
+        if myDB.db_connect():
+            result = myDB.db_select()
+        for item in result:
+            if 0 < result.index(item) < 11:
+                textArr=str(item)[2:-3].split(' ')
+                app.root.ids.scrollview.add_widget(
+                    MDRoundFlatButton(
+                        text=textArr[0],
+                        size_hint_y=None,
+                        width=200,
+                        height=40,
+                        )
+                )
 
+class MyButton(MDRoundFlatButton, ThemableBehavior):
     def on_release(self, *args):
         
         app = App.get_running_app()
@@ -241,16 +270,23 @@ class MyButton(MDRoundFlatButton, ThemableBehavior):
         my = weatherTest.getWeather(self.name)
         listWeather = my.geo_location()
         if listWeather:
-            #self.insert_db(self.name)
             ssh = str(listWeather[0]).split('.')
             if len(ssh) == 1:
                 ssh.append(0)
             vdg = str(listWeather[1]).split('.')
             if len(vdg) == 1:
                 vdg.append(0)
-            
-            app.root.ids['dateTime'].text = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            app.root.ids['cityName'].text = self.name + ' ' + str(ssh[0]) + '°' + str(ssh[1]) + "'" + ' с. ш.' + ' ' + str(vdg[0]) + '°' + str(vdg[1]) + "'" + ' в. д.'
+            dtime =datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            cityCoord = self.name + ' ' + str(ssh[0]) + '°' + str(ssh[1]) + "'" + ' с. ш.' + ' ' + str(vdg[0]) + '°' + str(vdg[1]) + "'" + ' в. д.'
+            #insert to db
+            myDB = dbOperation.db_operation()
+            if myDB.db_connect():
+                if myDB.db_create_tables():
+                    myDB.db_insert(dtime, cityCoord, listWeather[2], listWeather[3], listWeather[5], 
+                        listWeather[4]*0.75, listWeather[6], listWeather[7], listWeather[8], listWeather[9])
+           #after
+            app.root.ids['dateTime'].text = dtime
+            app.root.ids['cityName'].text = cityCoord
             if listWeather[8] == '180':
                 windD = 'Южный'
             elif listWeather[8] == '90':
