@@ -24,7 +24,3 @@ class getWeather:
                         return self.weather_data(location.latitude, location.longitude)
                 except Exception as e:
                         return False
-	
-
-#my = getWeather('Moscow')
-#print(my.geo_location())
